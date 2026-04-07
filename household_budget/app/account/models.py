@@ -3,7 +3,6 @@ from django.db import models
 
 from household_budget.core.models import TimeStampModel
 
-User = settings.AUTH_USER_MODEL
 class Account(TimeStampModel):
 
     class BankCode(models.TextChoices):
@@ -28,7 +27,7 @@ class Account(TimeStampModel):
         OVERDRAFT   = 'OVERDRAFT',   '마이너스'
         LOAN        = 'LOAN',        '대출'
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='accounts')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='accounts')
     account_type = models.CharField(max_length=20, choices=AccountType.choices)
     balance = models.DecimalField(max_digits=10, decimal_places=2)
     bank_code = models.CharField(max_length=3, choices=BankCode.choices)
