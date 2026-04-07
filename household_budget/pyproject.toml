@@ -1,0 +1,20 @@
+[project]
+name = "household-budget"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "django>=6.0.3",
+    "djangorestframework>=3.17.1",
+    "drf-spectacular>=0.29.0",
+    "gunicorn>=25.3.0",
+    "psycopg2-binary>=2.9.11",
+    "python-dotenv>=1.2.2",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.5.1",
+    "ruff>=0.15.9",
+]
