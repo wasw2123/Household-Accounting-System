@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/bin/pre-commit install:*)",
+      "Bash(uv sync:*)",
+      "Read(//Users/admin/.local/bin/**)",
+      "Read(//Users/admin/**)",
+      "Bash(~/.local/bin/uv sync:*)",
+      "Bash(git config:*)",
+      "Bash(~/.local/bin/uv run:*)",
+      "Bash(git -C /Users/admin/Desktop/Household-Accounting-System ls-files --cached)",
+      "Bash(git -C /Users/admin/Desktop/Household-Accounting-System ls-files --cached .env)",
+      "Bash(git -C /Users/admin/Desktop/Household-Accounting-System log --all --full-history -- .env household_budget/.env)",
+      "Bash(git -C /Users/admin/Desktop/Household-Accounting-System show ad46cd3f37c00f56e59c2c90bf8b03168fe32b69:household_budget/.env)"
+    ]
+  }
+}
