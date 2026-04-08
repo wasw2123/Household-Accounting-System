@@ -1,6 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.db import models
 from household_budget.core.models import TimeStampModel
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, name, nickname, phone_number, password=None):
@@ -24,6 +25,7 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
 class CustomUser(TimeStampModel, AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=20)
@@ -45,4 +47,3 @@ class CustomUser(TimeStampModel, AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-
