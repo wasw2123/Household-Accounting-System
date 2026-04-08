@@ -1,10 +1,11 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from app.account.models import Account
-from app.account.serializers import AccountListCreateSerializer
+from app.account.serializers import AccountDetailSerializer, AccountListCreateSerializer
 
 
 class AccountListCreateAPIView(APIView):
@@ -22,3 +23,10 @@ class AccountListCreateAPIView(APIView):
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AccountDetailAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        account = get_object_or_404(request, *args, **kwargs)
+        serializer = AccountDetailSerializer(account, many=False)
+        return Response(serializer.data)
