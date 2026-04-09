@@ -10,7 +10,9 @@ User = get_user_model()
 # 초기세팅
 @pytest.fixture
 def user(db):
-    return User.objects.create_user(email="test@test.com", nickname="test nickname", phone_number="010-1234-1234")
+    return User.objects.create_user(
+        email="test@test.com", nickname="test nickname", gender=User.Gender.MALE, age=20, job=User.Job.EMPLOYEE
+    )
 
 
 @pytest.fixture
