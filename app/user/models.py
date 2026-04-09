@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+
 from core.models import TimeStampModel
 
 
@@ -25,7 +26,6 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(TimeStampModel, AbstractBaseUser, PermissionsMixin):
-
     class Gender(models.TextChoices):
         MALE = "M", "남"
         FEMALE = "F", "여"

@@ -22,6 +22,6 @@ from app.user import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    #auth
+    # auth
     path("register/", views.RegisterView.as_view(), name="register"),
 ]

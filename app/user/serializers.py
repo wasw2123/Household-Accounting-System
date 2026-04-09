@@ -6,10 +6,7 @@ from app.user.models import CustomUser
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(
-        required=True,
-        validators=[UniqueValidator(queryset=CustomUser.objects.all())]
-    )
+    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
     password = serializers.CharField(
         write_only=True,
         required=True,
@@ -23,7 +20,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if data["password"] != data["password2"]:
-            raise serializers.ValidationError({"password":"비밀번호가 일치하지 않습니다."})
+            raise serializers.ValidationError({"password": "비밀번호가 일치하지 않습니다."})
         return data
 
     def create(self, validated_data):
