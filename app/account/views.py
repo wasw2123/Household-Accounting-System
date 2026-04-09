@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -9,6 +10,8 @@ from app.account.serializers import AccountDetailSerializer, AccountListCreateSe
 
 
 class AccountListCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         account_list = get_account_list(user=request.user)
 
@@ -30,6 +33,8 @@ class AccountListCreateAPIView(APIView):
 
 
 class AccountDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, account_pk):
         try:
             account = get_account_detail(user=request.user, account_pk=account_pk)
