@@ -7,4 +7,4 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = "__all__"
-        read_only_fields = ["user", "balance_after", "created_at", "updated_at"]
+        read_only_fields = ["user", "created_at", "updated_at"]
