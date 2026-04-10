@@ -24,3 +24,34 @@ PUT vs PATCH
 
 -소프트 딜리트는 DB에서 row를 지우는 게 아니라 is_delete=True로 변경하는것.
 변경사항을 DB에 저장해야 하니까 save() 필요. -> `request.user.save()` 추가
+
+### Swagger 문서화 설정
+- drf-spectacular을 사용해서 API 문서를 자동 생성함.
+
+설정 내용
+settings.py
+
+DEFAULT_SCHEMA_CLASS 추가 — drf-spectacular가 view 읽고 자동으로 API 스키마 생성
+SPECTACULAR_SETTINGS 추가 — Swagger UI 제목/설명/버전 설정, Bearer 토큰 입력창 생성
+
+config/urls.py
+
+/api/schema/ — API 스키마 json 반환
+/api/docs/ — Swagger UI 페이지
+
+
+authentication.py
+CookieJWTAuthentication은 쿠키 방식이라 Swagger가 인식 못 함.
+OpenApiAuthenticationExtension 상속받아서 Swagger에 등록.
+get_security_definition에서 Bearer 방식으로 정의.
+
+extend_schema
+각 view 메서드에 붙이는 데코레이터. Swagger UI에 표시될 내용 커스텀.
+
+summary — API 제목
+description — 상세 설명
+request — 요청 body 형식. 시리얼라이저 넣으면 필드 자동 표시
+responses — 상태코드별 응답 설명
+
+성공 응답 → 시리얼라이저
+에러 응답 → OpenApiResponse (설명만 필요할 때)
