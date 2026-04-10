@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from app.account.selectors import get_account_detail
@@ -9,7 +10,10 @@ User = get_user_model()
 def create_account(*, user: User, data):
     serializer = AccountListCreateSerializer(data=data)
     serializer.is_valid(raise_exception=True)
-    serializer.save(user=user)
+    if settings.DEBUG:
+        serializer.save(user=User.objects.first())
+    else:
+        serializer.save(user=user)
     return serializer.data
 
 
