@@ -11,7 +11,6 @@ dependencies = [
     "djangorestframework-stubs>=3.16.9",
     "drf-spectacular>=0.29.0",
     "gunicorn>=25.3.0",
-    "whitenoise>=6.9.0",
     "psycopg2-binary>=2.9.11",
     "python-dotenv>=1.2.2",
     # Analysis
