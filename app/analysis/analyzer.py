@@ -1,12 +1,20 @@
 import os
+from datetime import datetime, time
 
 import matplotlib.pyplot as plt
 import pandas as pd
 from django.conf import settings
+from django.utils import timezone
 
 from app.transaction.models import Transaction
 
 from .models import Analysis
+
+# Matplotlib은 기본적으로 영어 폰트만 지원한다. 한글을 차트에 표시하려면
+# 한글 폰트를 지정해줘야하는데 AppleGothic은 macOS에 기본으로 설치된 한글 폰트이다
+plt.rcParams["font.family"] = "AppleGothic"
+# 한글 폰트로 바꾸면 -기호가 깨지는 문제가 발생하는데 그것을 방지하는 설정이다
+plt.rcParams["axes.unicode_minus"] = False
 
 
 class SpendingAnalyzer:
@@ -20,7 +28,12 @@ class SpendingAnalyzer:
 
     def fetch_data(self):
         transactions = Transaction.objects.filter(
-            user=self.user, transaction_type="WITHDRAWAL", created_at__range=(self.period_start, self.period_end)
+            user=self.user,
+            transaction_type="WITHDRAWAL",
+            created_at__range=(
+                timezone.make_aware(datetime.combine(self.period_start, time.min)),
+                timezone.make_aware(datetime.combine(self.period_end, time.max)),
+            ),
         ).select_related("account")
 
         if not transactions.exists():
