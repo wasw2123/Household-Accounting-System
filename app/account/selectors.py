@@ -17,7 +17,7 @@ def get_account_list(*, user: User) -> QuerySet[Account]:
 def get_account_detail(*, user: User, account_pk: int) -> Account:
     try:
         if settings.DEBUG:
-            return Account.objects.get(pk=account_pk)
+            return Account.objects.select_related("user").get(pk=account_pk)
         return Account.objects.select_related("user").get(user=user, pk=account_pk)
     except Account.DoesNotExist:
         raise AccountNotFoundError("계좌를 찾을 수 없습니다.") from None
