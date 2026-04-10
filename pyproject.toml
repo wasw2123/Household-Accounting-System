@@ -20,6 +20,7 @@ dependencies = [
     "django-celery-beat>=2.7.0",
     "django-celery-results>=2.5.0",
     "redis>=5.0.0",
+    "Pillow>=11.0.0",
 ]
 
 [dependency-groups]
