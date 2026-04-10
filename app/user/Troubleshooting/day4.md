@@ -22,7 +22,7 @@ PUT vs PATCH
   - validated_data.get("gender") → validated_data.get("gender", "")
   - NOT NULL 제약 조건 위반 방지
 
--소프트 딜리트는 DB에서 row를 지우는 게 아니라 is_delete=True로 변경하는것.
+- 소프트 딜리트는 DB에서 row를 지우는 게 아니라 is_delete=True로 변경하는것.
 변경사항을 DB에 저장해야 하니까 save() 필요. -> `request.user.save()` 추가
 
 ### Swagger 문서화 설정
@@ -55,3 +55,23 @@ responses — 상태코드별 응답 설명
 
 성공 응답 → 시리얼라이저
 에러 응답 → OpenApiResponse (설명만 필요할 때)
+
+### 어드민 페이지 설정
+admin.py 구성
+
+- list_display — 목록 페이지에서 보여줄 컬럼
+- search_fields — 검색창에서 검색 가능한 필드
+- list_filter — 오른쪽 사이드바 필터 버튼
+
+
+#### is_staff vs is_superuser
+
+- is_staff=True — 어드민 페이지 로그인 가능. 권한은 별도로 부여해야 함. 기본적으로 아무것도 못 함
+- is_superuser=True — 어드민 페이지 + 모든 권한 자동으로 가짐. 권한 체크 자체를 bypass
+
+
+#### 어드민 페이지 접근 조건
+
+- is_staff=True 인 유저만 접근 가능
+- is_superuser=True 면 모든 모델 읽기/쓰기/삭제 가능
+- is_staff=True 만 있으면 어드민 로그인은 되는데 권한 없으면 아무것도 못 함
