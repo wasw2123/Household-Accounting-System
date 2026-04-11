@@ -1,1 +1,41 @@
-# Create your views here.
+from drf_spectacular.utils import extend_schema
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from app.notification.serializers import NotificationSerializer
+from app.notification.services import delete_notification, get_notification_list_data, retrieve_notification
+
+
+class NotificationListAPIView(APIView):
+    @extend_schema(
+        summary="알림 목록 조회",
+        description="알림 목록을 조회합니다.",
+        request=NotificationSerializer,
+        responses={200: NotificationSerializer},
+    )
+    def get(self, request):
+        data = get_notification_list_data(user=request.user)
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class NotificationDetailAPIView(APIView):
+    @extend_schema(
+        summary="알림 디테일 조회",
+        description="알림 조회 및 읽은 표시",
+        request=NotificationSerializer,
+        responses={200: NotificationSerializer},
+    )
+    def get(self, request, noti_pk):
+        data = retrieve_notification(user=request.user, noti_pk=noti_pk)
+        return Response(data, status=status.HTTP_200_OK)
+
+    @extend_schema(
+        summary="알림 디테일 삭제",
+        description="조회한 알림 수동 삭제",
+        request=NotificationSerializer,
+        responses={204: NotificationSerializer},
+    )
+    def delete(self, request, noti_pk):
+        delete_notification(user=request.user, noti_pk=noti_pk)
+        return Response({"message": "알림이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
