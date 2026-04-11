@@ -8,10 +8,17 @@ from app.account.models import Account
 User = get_user_model()
 
 
-def get_account_list(*, user: User) -> QuerySet[Account]:
+def get_account_list(*, user: User, account_type, bank_code) -> QuerySet[Account]:
     if settings.DEBUG:
-        return Account.objects.all().select_related("user")
-    return Account.objects.filter(user=user).select_related("user")
+        account_list = Account.objects.all().select_related("user")
+    else:
+        account_list = Account.objects.filter(user=user).select_related("user")
+    # filter
+    if account_type:
+        account_list = account_list.filter(account_type=account_type)
+    if bank_code:
+        account_list = account_list.filter(bank_code=bank_code)
+    return account_list
 
 
 def get_account_detail(*, user: User, account_pk: int) -> Account:

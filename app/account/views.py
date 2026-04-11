@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
@@ -6,9 +7,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app.account.selectors import get_account_list
+from app.account.selectors import get_account_detail, get_account_list
 from app.account.serializers import AccountCreateSerializer, AccountDetailSerializer, AccountListSerializer
-from app.account.services import create_account, delete_account, retrieve_account, update_account
+from app.account.services import delete_account
+
+User = get_user_model()
 
 
 class AccountListCreateAPIView(APIView):
@@ -21,7 +24,11 @@ class AccountListCreateAPIView(APIView):
         responses={200: AccountListSerializer},
     )
     def get(self, request):
-        account_list = get_account_list(user=request.user)
+        account_list = get_account_list(
+            user=request.user,
+            account_type=request.query_params.get("account_type"),
+            bank_code=request.query_params.get("bank_code"),
+        )
         paginator = PageNumberPagination()
         queryset = paginator.paginate_queryset(account_list, request)
         serializer = AccountListSerializer(queryset, many=True)
@@ -34,8 +41,13 @@ class AccountListCreateAPIView(APIView):
         responses={201: AccountCreateSerializer},
     )
     def post(self, request):
-        data = create_account(user=request.user, data=request.data)
-        return Response(data, status=status.HTTP_201_CREATED)
+        serializer = AccountCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if settings.DEBUG:
+            serializer.save(user=User.objects.first())
+        else:
+            serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class AccountDetailAPIView(APIView):
@@ -46,8 +58,9 @@ class AccountDetailAPIView(APIView):
         summary="계좌 상세정보 조회", description="계좌 상세정보 조회", responses={200: AccountDetailSerializer}
     )
     def get(self, request, account_pk):
-        data = retrieve_account(user=request.user, account_pk=account_pk)
-        return Response(data, status=status.HTTP_200_OK)
+        account = get_account_detail(user=request.user, account_pk=account_pk)
+        serializer = AccountDetailSerializer(account, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
         summary="계좌 상세정보 수정",
@@ -56,8 +69,11 @@ class AccountDetailAPIView(APIView):
         responses={200: AccountDetailSerializer},
     )
     def patch(self, request, account_pk):
-        data = update_account(user=request.user, data=request.data, account_pk=account_pk)
-        return Response(data, status=status.HTTP_200_OK)
+        account = get_account_detail(user=request.user, account_pk=account_pk)
+        serializer = AccountDetailSerializer(account, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
         summary="계좌 삭제",
