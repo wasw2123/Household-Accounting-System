@@ -1,10 +1,7 @@
-# Register your models here.
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 
 from app.notification.models import Notification
-
-User = get_user_model()
+from app.user.models import CustomUser
 
 admin.site.register(Notification)
 
@@ -22,6 +19,10 @@ class NotificationInline(admin.TabularInline):
     extra = 1
 
 
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+@admin.register(CustomUser)
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ("email", "nickname", "is_active", "is_staff", "is_delete")
+    search_fields = ("email", "nickname")
+    list_filter = ("is_active", "is_staff", "is_delete")
+
     inlines = [NotificationInline]
