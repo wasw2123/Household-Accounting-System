@@ -160,7 +160,7 @@ def test_services_retrieve_account_success(user, account):
     """계좌 단건 조회 서비스 성공"""
     result = retrieve_account(user=user, account_pk=account.pk)
 
-    assert result.data["number"] == account.number
+    assert result["number"] == account.number
 
 
 @pytest.mark.django_db
@@ -359,8 +359,7 @@ def test_views_delete_account_success(client, user, account):
     url = reverse("account:detail", kwargs={"account_pk": account.pk})
     response = client.delete(url)
 
-    assert response.status_code == 200
-    assert response.data["message"] == "계좌가 삭제되었습니다."
+    assert response.status_code == 204
     assert Account.objects.filter(pk=account.pk).exists() is False
 
 
