@@ -177,3 +177,10 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(hour=0, minute=0, day_of_month=1),
     },
 }
+
+CELERY_BEAT_SCHEDULE = {
+    "analyze-weekly": {
+        "task": "app.analysis.tasks.analyze_weekly_task",
+        "schedule": 60.0,
+    },
+}
