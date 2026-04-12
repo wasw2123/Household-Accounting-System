@@ -73,7 +73,8 @@ class LogoutView(APIView):
     )
     def post(self, request):
         refresh_token = request.COOKIES.get("refresh_token")
-        logout(refresh_token)
+        if not logout(refresh_token):
+            return Response({"message": "Refresh Token이 없습니다."}, status=status.HTTP_401_UNAUTHORIZED)
 
         response = Response({"message": "로그아웃 되었습니다"}, status=status.HTTP_200_OK)
         response.delete_cookie("access_token")
