@@ -1,26 +1,23 @@
-from django.contrib.auth import get_user_model
+from datetime import timedelta
 
-from app.notification.selectors import get_notification_detail, get_notification_list
-from app.notification.serializers import NotificationSerializer
+from django.contrib.auth import get_user_model
+from django.utils import timezone
+
+from app.notification.models import Notification
 
 User = get_user_model()
 
 
-def get_notification_list_data(*, user: User):
-    notification_list = get_notification_list(user=user)
-    serializer = NotificationSerializer(notification_list, many=True)
-    return serializer.data
-
-
-def retrieve_notification(*, user: User, noti_pk: int):
-    notification = get_notification_detail(user=user, noti_pk=noti_pk)
+def mark_notification_as_read(notification: Notification) -> Notification:
     notification.is_read = True
     notification.save(update_fields=["is_read"])
-    serializer = NotificationSerializer(notification, many=False)
-    return serializer.data
+    return notification
 
 
-def delete_notification(*, user: User, noti_pk: int):
-    notification = get_notification_detail(user=user, noti_pk=noti_pk)
+def delete_notification(notification: Notification):
     notification.delete()
     return None
+
+
+def hard_delete_old_notification(*, days: int = 30):
+    Notification.all_objects.filter(deleted_at__lt=timezone.now() - timedelta(days=days)).hard_delete()

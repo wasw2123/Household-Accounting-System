@@ -5,8 +5,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from app.notification.selectors import get_notification_detail, get_notification_list
 from app.notification.serializers import NotificationSerializer
-from app.notification.services import delete_notification, get_notification_list_data, retrieve_notification
+from app.notification.services import (
+    delete_notification,
+    mark_notification_as_read,
+)
 
 
 class NotificationListAPIView(APIView):
@@ -19,8 +23,9 @@ class NotificationListAPIView(APIView):
         responses={200: NotificationSerializer},
     )
     def get(self, request):
-        data = get_notification_list_data(user=request.user)
-        return Response(data, status=status.HTTP_200_OK)
+        notification_list = get_notification_list(user=request.user)
+        serializer = NotificationSerializer(notification_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class NotificationDetailAPIView(APIView):
@@ -33,8 +38,10 @@ class NotificationDetailAPIView(APIView):
         responses={200: NotificationSerializer},
     )
     def get(self, request, noti_pk):
-        data = retrieve_notification(user=request.user, noti_pk=noti_pk)
-        return Response(data, status=status.HTTP_200_OK)
+        notification = get_notification_detail(user=request.user, noti_pk=noti_pk)
+        mark_notification_as_read(notification)
+        serializer = NotificationSerializer(notification, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
         summary="알림 디테일 삭제",
@@ -42,5 +49,6 @@ class NotificationDetailAPIView(APIView):
         responses={204: None},
     )
     def delete(self, request, noti_pk):
-        delete_notification(user=request.user, noti_pk=noti_pk)
+        notification = get_notification_detail(user=request.user, noti_pk=noti_pk)
+        delete_notification(notification)
         return Response(status=status.HTTP_204_NO_CONTENT)
