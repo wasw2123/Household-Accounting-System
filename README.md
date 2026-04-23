@@ -9,7 +9,11 @@ Django
 Docker+PostgreSQL
 
 ## 역할
+계좌 - account
+알림 - notification
 
 
 ## 구현 기능
+계좌 CRUD API        
+알림 RD API, 생성 Signal
 
