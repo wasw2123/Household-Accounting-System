@@ -15,6 +15,6 @@ Docker+PostgreSQL
 
 ## 구현 기능
 계좌 CRUD API        
-알림 RD API, 생성 Signal
+알림 RD API, 생성 Signal        
 Soft Delete 공용 모델
 
