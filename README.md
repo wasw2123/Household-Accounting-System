@@ -4,8 +4,8 @@
 가계부를 작성하고 특정 상황에 알림을 받는 서비스
 
 ## 주요 기술 스택
-Python
-Django
+Python,
+Django, DRF, 
 Docker+PostgreSQL
 
 ## 역할
